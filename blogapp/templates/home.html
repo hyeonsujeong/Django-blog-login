@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">Navbar</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{% url 'home' %}">Home <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'new' %}">Writing</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'signup' %}">sign up</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <div class="container" id="login-form">
+            {% if user.is_authenticated %}
+            {% else %}
+                <h1>Login</h1>
+                <form method="POST" action="{% url 'home' %}">
+                    {% csrf_token %}
+                    Username:
+                    <br>
+                    <input name="username" type="text" value="">
+                    <br>
+                    Password:
+                    <br>
+                    <input name="password" type="password" value="">
+                    <br>
+                    <br>
+                    <input class="btn btn-primary" type="submit" value="Login">
+                </form>
+            {% endif %}
+   
+        </div>
+        <br><br>
+        <div class="container">
+            {% for blog in posts %}
+                <div class="container">
+                    <h2>{{ blog.title }}</h2>
+                    {{ blog.pub_date }}<br>
+                    <a href="{% url 'detail' blog.id %}">view detail</a><br><br>    
+                </div>
+            {% endfor %}
+
+            {% if posts.has_previous %}
+                <a class="btn btn-default" role="button" href="?page=1">First</a>
+                <a class="btn btn-default" role="button" href="?page={{posts.previous_page_number}}"> <<  </a>
+            {% endif %}
+
+            <span>{{ posts.number }}</span>
+            <span>of</span>
+            <span>{{ posts.paginator.num_pages }}</span>
+
+            {% if posts.has_next %}
+                <a class="btn btn-default" role="button" href="?page={{ posts.next_page_number }}"> >>  </a>
+                <a class="btn btn-default" role="button" href="?page={{ posts.paginator.num_pages }}">Last</a>
+            {% endif %}
+        </div>
+    </body>
+</html>           
